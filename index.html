@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <title>javascript</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <script type='text/javascript'>
 
 var galleries = {
@@ -58,7 +57,7 @@ var defaultImagesCollectionName = "images";
 
 function addImage(imagesCollectionName, newImage){
     this[imagesCollectionName].push(newImage);
-    var message = "Äîäàíî çîáðàæåííÿ";
+    var message = "Додано зображення";
     if(newImage.hasOwnProperty("name"))
         message = message + " \"" + newImage.name + "\"";
     else
@@ -69,12 +68,12 @@ function addImage(imagesCollectionName, newImage){
 function changeKeysValue(imagesCollectionName, imageIndex, key, newValue){
     var targetImage = this[imagesCollectionName][imageIndex];
     targetImage[key] = newValue; 
-    showInformation("Çíà÷åííÿ êëþ÷à \"" + key + "\" äëÿ çîáðàæåííÿ "+ imageIndex +" áóëà çì³íåíî íà çíà÷åííÿ \"" + newValue + "\"");
+    showInformation("Значення ключа \"" + key + "\" для зображення "+ imageIndex +" була змінено на значення \"" + newValue + "\"");
 }
 
 function removeImages(imagesCollectionName, startIndex, count){
     var imagesCollection = this[imagesCollectionName];
-    var message = "Âèäàëåíî çîáðàæííÿ: ";
+    var message = "Видалено зображння: ";
     for(var i=startIndex; i<imagesCollection.length; i++){
         if(i >= (startIndex+count)) break;
         message = message +  imagesCollection[i].name + ", ";
@@ -115,7 +114,7 @@ function getFilteredArrayByParam(imagesCollectionName, param){
             result["images"].push(gallery[i]);
     }
 
-    showInformation("Âñüîãî êàðòèíîê: " + gallery.length + " Ï³ñëÿ ô³ëüòðàö³¿: " + result[defaultImagesCollectionName].length);
+    showInformation("Всього картинок: " + gallery.length + " Після фільтрації: " + result[defaultImagesCollectionName].length);
     return result;
 }
 
@@ -127,17 +126,17 @@ function checkImagesDescription(){
     var galleryImages = this[defaultImagesCollectionName];
     for(var i=0; i<galleryImages.length; i++){
         if(galleryImages[i].description == "")
-            showInformation("Çîáðàæåííÿ " + galleryImages[i]['name']+ " íå ìàº îïèñó");
+            showInformation("Зображення " + galleryImages[i]['name']+ " не має опису");
     }
 }
 
 for(var g in galleries){
-    showInformation("Ïðàöþºìî ç ãàëàðåºþ " + g, true);
+    showInformation("Працюємо з галареєю " + g, true);
 
     var gallery = galleries[g];
 
-    //1. Äîäàòè, ðåäàãóâàòè, âèäàëèòè êàðòèíêó ãàëåðå¿.
-    showInformation("Äîäàòè êàðòèíêó äî ãàëåðå¿.");
+    //1. Додати, редагувати, видалити картинку галереї.
+    showInformation("Додати картинку до галереї.");
     var newImage={
         name:"horse",
         path:"images/horse.png",
@@ -145,28 +144,28 @@ for(var g in galleries){
         date:new Date().toISOString()
     };
     addImage.call(gallery, defaultImagesCollectionName, newImage);
-//â³äîáðàæåííÿ ðåçóëüòàòó äîäàâàííÿ êàðòèíêè äî ãàëåðå¿
+//відображення результату додавання картинки до галереї
     showGalleryImages.call(gallery, defaultImagesCollectionName);
 
-    showInformation("Ðåäàãóâàòè êàðòèíêó ãàëåðå¿.", true);
-//ðåäàãóºìî ïåðøó êàðòèíêó â ãàëåðå¿ "gallery", çì³íþåìî ³ìÿ êàðòèíêè íà "kitten"
+    showInformation("Редагувати картинку галереї.", true);
+//редагуємо першу картинку в галереї "gallery", змінюемо імя картинки на "kitten"
     changeKeysValue.call(gallery, defaultImagesCollectionName, 0, "name", "kitten");
-//â³äîáðàæåííÿ ðåçóëüòàòó ðåäàãóâàííÿ êàðòèíêè ãàëåðå¿
+//відображення результату редагування картинки галереї
     showGalleryImages.call(gallery, defaultImagesCollectionName);
 
-    showInformation("Âèäàëèòè êàðòèíêó ãàëåðå¿.", true);
-//âèäàëÿºìî êàðòèíêè ç ãàëåðå¿ "gallery", âèäàëÿåìî êàðòèíêè ïî÷èíàþ÷è ç ³íäåêñó 2 òà ê³ëüê³ñòþ 2 øò
+    showInformation("Видалити картинку галереї.", true);
+//видаляємо картинки з галереї "gallery", видаляемо картинки починаючи з індексу 2 та кількістю 2 шт
     removeImages.call(gallery, defaultImagesCollectionName, 2, 2);
-//â³äîáðàæåííÿ ðåçóëüòàòó âèäàëåííÿ êàðòèíîê ãàëåðå¿
+//відображення результату видалення картинок галереї
     showGalleryImages.call(gallery, defaultImagesCollectionName);
 
-//2. Íàïèñàòè ôóíêö³þ, ùî áóäå âèâîäèòè íà åêðàí ³íôîðìàö³þ ïðî ïåðåäàí³ êàðòèíêè ãàëåðå¿. Òà âèêîðèñòîâóâàòè ¿¿ äëÿ âèâåäåííÿ ðåçóëüòàòó ðîáîòè âñ³õ ôóíêö³é ãàëåðå¿.
-    showInformation("Â³äîáðàæåííÿ âñ³õ êàðòèíîê ãàëåðå¿", true);
+//2. Написати функцію, що буде виводити на екран інформацію про передані картинки галереї. Та використовувати її для виведення результату роботи всіх функцій галереї.
+    showInformation("Відображення всіх картинок галереї", true);
     showGalleryImages.call(gallery, defaultImagesCollectionName);
 
-//3. Â³äñîðòóâàòè êàðòèíêè ïî çàçíà÷åíîìó ïîëþ (ïîëå ïåðåäàâàòè àðãóìåíòîì ó ôóíêö³þ).
-    showInformation("Ñîðòóâàííÿ êàðòèíîê ãàëåðå¿ ïî ³ìåí³ â ïîðÿäêó ñïàäàííÿ", true);
-//ñîðòóºìî êàðòèíêè ãàëåðå¿ "gallery" ïî ïîëþ "name"
+//3. Відсортувати картинки по зазначеному полю (поле передавати аргументом у функцію).
+    showInformation("Сортування картинок галереї по імені в порядку спадання", true);
+//сортуємо картинки галереї "gallery" по полю "name"
     var key = "name";
     var sortingFunction = function(obj1, obj2){
         if (!obj1.hasOwnProperty(key) || !obj2.hasOwnProperty(key))
@@ -176,34 +175,34 @@ for(var g in galleries){
         return 0;
     };
     sortBy.call(gallery, defaultImagesCollectionName, sortingFunction);
-//â³äîáðàæåííÿ ðåçóëüòàòó ñîðòóâàííÿ êàðòèíîê ãàëåðå¿
+//відображення результату сортування картинок галереї
     showGalleryImages.call(gallery, defaultImagesCollectionName);
 
-//4. Â³äô³ëüòðóâàòè êàðòèíêè ïî ïåðåäàíîìó ïîëþ.
+//4. Відфільтрувати картинки по переданому полю.
     var filteringKey = "modificationDatetime";
-    showInformation("Ô³ëüòðóâàííÿ êàðòèíîê ãàëåðå¿, çàëèøàþòüñÿ êàðòèíêè ÿê³ ìàþòü ïîëå \"" + filteringKey + "\" ", true);
-//â³äô³ëüòðîâóºìî ò³ëüêè ò³ êàðòèíêè â ãàëåðå¿ "gallery" ÿê³ ìàþòü ïîëå "modificationDatetime"
+    showInformation("Фільтрування картинок галереї, залишаються картинки які мають поле \"" + filteringKey + "\" ", true);
+//відфільтровуємо тільки ті картинки в галереї "gallery" які мають поле "modificationDatetime"
     var filteredGallery = getFilteredArrayByParam.call(gallery, defaultImagesCollectionName, filteringKey);
-//â³äîáðàæåííÿ ðåçóëüòàòó ô³ëüòðóâàííÿ êàðòèíîê ãàëåðå¿
+//відображення результату фільтрування картинок галереї
     showGalleryImages.call(filteredGallery, defaultImagesCollectionName);
 
-//5. Ñåð³àë³çâàòè ãàëåðåþ â ôîðìàò JSON. Äîäàòè ìîæëèâ³ñòü ñåð³àë³çóâàòè ïîëÿ ïî äåÿê³é óìîâ³. Íàïðèêëàä, ëèøå ³ìåíà êàðòèíîê, àáî ëèøå êàðòèíêè, ùî ìàþòü øëÿõ äî ôàéëà.
-    showInformation("Ñåð³àë³çàö³ÿ âñ³º¿ ãàëåðå¿ â ôîðìàò JSON", true);
+//5. Серіалізвати галерею в формат JSON. Додати можливість серіалізувати поля по деякій умові. Наприклад, лише імена картинок, або лише картинки, що мають шлях до файла.
+    showInformation("Серіалізація всієї галереї в формат JSON", true);
     var result = serialize.call(gallery);
     showInformation(result);
 
-    showInformation("Ñåð³àë³çàö³ÿ êàðòèíîê ãàëåðå¿ â ÿêèõ º øëÿõ äî ôàéëó êàðòèíêè â ôîðìàò JSON");
+    showInformation("Серіалізація картинок галереї в яких є шлях до файлу картинки в формат JSON");
 
     var filteredGalleryByPath = getFilteredArrayByParam.call(gallery, defaultImagesCollectionName, 'path');
 
     showInformation(serialize.call(filteredGalleryByPath));
 
-    showInformation("Ñåð³àë³çàö³ÿ ëèøå íàçâ òà îïèñó âñ³õ êàðòèíîê ãàëåðå¿ â ôîðìàò JSON", true);
+    showInformation("Серіалізація лише назв та опису всіх картинок галереї в формат JSON", true);
     var memberFilter = ["images", "name", "description"];
     showInformation(serialize.call(gallery, memberFilter));
 
-//6. Íàïèñàòè ôóíêö³þ, ùî áóäå ïåðåâ³ðÿòè, ÷è âñ³ êàðòèíêè ìàþòü îïèñ.
-    showInformation("Ïåðåâ³ðêà êàðòèíîê, ÷è âñ³ ìàþòü îïèñ", true);
+//6. Написати функцію, що буде перевіряти, чи всі картинки мають опис.
+    showInformation("Перевірка картинок, чи всі мають опис", true);
     checkImagesDescription.call(gallery);
 }
 
