@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>javascript</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
+<script type='text/javascript'>
+
+var galleries = {
+    gallery1: {
+        images: [
+            {
+                "name": "cat",
+                "path": "images/cat.png",
+                "description": "The best cat ever",
+                "date": "2014-07-21T09:05:34.540Z",
+                "modificationDatetime": "2014-07-21T09:07:47.683Z"
+            },
+            {
+                "name": "dog",
+                "description": "",
+                "date": "2014-07-21T09:06:05.544Z",
+                "modificationDatetime": "2014-07-21T09:07:47.683Z"
+            },
+            {
+                "name": "giraffe",
+                "path": "images/giraffe.png",
+                "description": "",
+                "date": "2014-07-21T09:07:24.187Z"
+            },
+            {
+                "name": "dinosaur",
+                "path": "images/dinosaur.png",
+                "description": "",
+                "date": "2014-07-21T09:07:47.683Z",
+                "modificationDatetime": "2014-07-21T09:07:47.683Z"
+            }
+        ]
+    },
+    gallery2: {
+        images: [
+            {
+                "name": "bird",
+                "path": "images/cat.png",
+                "description": "The best cat ever",
+                "date": "2014-07-21T09:05:34.540Z",
+                "modificationDatetime": "2014-07-21T09:07:47.683Z"
+            },
+            {
+                "name": "pig",
+                "description": "",
+                "date": "2014-07-21T09:06:05.544Z"
+            }
+        ]
+    }
+};
+
+var defaultImagesCollectionName = "images";
+
+function addImage(imagesCollectionName, newImage){
+    this[imagesCollectionName].push(newImage);
+    var message = "Додано зображення";
+    if(newImage.hasOwnProperty("name"))
+        message = message + " \"" + newImage.name + "\"";
+    else
+        message = message + " \"nonamed\"";
+    showInformation(message);
+}
+
+function changeKeysValue(imagesCollectionName, imageIndex, key, newValue){
+    var targetImage = this[imagesCollectionName][imageIndex];
+    targetImage[key] = newValue; 
+    showInformation("Значення ключа \"" + key + "\" для зображення "+ imageIndex +" була змінено на значення \"" + newValue + "\"");
+}
+
+function removeImages(imagesCollectionName, startIndex, count){
+    var imagesCollection = this[imagesCollectionName];
+    var message = "Видалено зображння: ";
+    for(var i=startIndex; i<imagesCollection.length; i++){
+        if(i >= (startIndex+count)) break;
+        message = message +  imagesCollection[i].name + ", ";
+    }
+    imagesCollection.splice(startIndex, count);
+    showInformation(message);
+}
+
+function showGalleryImages(imagesCollectionName){
+    for(var i=0; i<this[imagesCollectionName].length; i++){
+        showImageInformation(this[imagesCollectionName][i]);
+        showInformation("-----------------------");
+    }
+}
+
+function showImageInformation(imageObject){
+    for (var key in imageObject) {
+            if (imageObject.hasOwnProperty(key))
+                showInformation(key + ": " + imageObject[key]);
+        }
+}
+
+function showInformation(message, isSpaceBefore){
+    if(isSpaceBefore === true)
+        console.log("");
+    console.log(message);
+}
+
+function sortBy(imagesCollectionName, sortingFunction){
+    this[imagesCollectionName].sort(sortingFunction);
+}
+
+function getFilteredArrayByParam(imagesCollectionName, param){
+    var result = {images:[]};
+    var gallery = this[imagesCollectionName];
+    for(var i=0; i<gallery.length; i++){
+        if (gallery[i].hasOwnProperty(param))
+            result["images"].push(gallery[i]);
+    }
+
+    showInformation("Всього картинок: " + gallery.length + " Після фільтрації: " + result[defaultImagesCollectionName].length);
+    return result;
+}
+
+function serialize(memberfilter){
+    return JSON.stringify(this, memberfilter, "\t");
+}
+        
+function checkImagesDescription(){
+    var galleryImages = this[defaultImagesCollectionName];
+    for(var i=0; i<galleryImages.length; i++){
+        if(galleryImages[i].description == "")
+            showInformation("Зображення " + galleryImages[i]['name']+ " не має опису");
+    }
+}
+
+for(var g in galleries){
+    showInformation("Працюємо з галареєю " + g, true);
+
+    var gallery = galleries[g];
+
+    //1. Додати, редагувати, видалити картинку галереї.
+    showInformation("Додати картинку до галереї.");
+    var newImage={
+        name:"horse",
+        path:"images/horse.png",
+        description:"The best horse ever",
+        date:new Date().toISOString()
+    };
+    addImage.call(gallery, defaultImagesCollectionName, newImage);
+//відображення результату додавання картинки до галереї
+    showGalleryImages.call(gallery, defaultImagesCollectionName);
+
+    showInformation("Редагувати картинку галереї.", true);
+//редагуємо першу картинку в галереї "gallery", змінюемо імя картинки на "kitten"
+    changeKeysValue.call(gallery, defaultImagesCollectionName, 0, "name", "kitten");
+//відображення результату редагування картинки галереї
+    showGalleryImages.call(gallery, defaultImagesCollectionName);
+
+    showInformation("Видалити картинку галереї.", true);
+//видаляємо картинки з галереї "gallery", видаляемо картинки починаючи з індексу 2 та кількістю 2 шт
+    removeImages.call(gallery, defaultImagesCollectionName, 2, 2);
+//відображення результату видалення картинок галереї
+    showGalleryImages.call(gallery, defaultImagesCollectionName);
+
+//2. Написати функцію, що буде виводити на екран інформацію про передані картинки галереї. Та використовувати її для виведення результату роботи всіх функцій галереї.
+    showInformation("Відображення всіх картинок галереї", true);
+    showGalleryImages.call(gallery, defaultImagesCollectionName);
+
+//3. Відсортувати картинки по зазначеному полю (поле передавати аргументом у функцію).
+    showInformation("Сортування картинок галереї по імені в порядку спадання", true);
+//сортуємо картинки галереї "gallery" по полю "name"
+    var key = "name";
+    var sortingFunction = function(obj1, obj2){
+        if (!obj1.hasOwnProperty(key) || !obj2.hasOwnProperty(key))
+            return -1;
+        if (obj1[key] < obj2[key]) return -1;
+        if (obj1[key] > obj2[key]) return 1;
+        return 0;
+    };
+    sortBy.call(gallery, defaultImagesCollectionName, sortingFunction);
+//відображення результату сортування картинок галереї
+    showGalleryImages.call(gallery, defaultImagesCollectionName);
+
+//4. Відфільтрувати картинки по переданому полю.
+    var filteringKey = "modificationDatetime";
+    showInformation("Фільтрування картинок галереї, залишаються картинки які мають поле \"" + filteringKey + "\" ", true);
+//відфільтровуємо тільки ті картинки в галереї "gallery" які мають поле "modificationDatetime"
+    var filteredGallery = getFilteredArrayByParam.call(gallery, defaultImagesCollectionName, filteringKey);
+//відображення результату фільтрування картинок галереї
+    showGalleryImages.call(filteredGallery, defaultImagesCollectionName);
+
+//5. Серіалізвати галерею в формат JSON. Додати можливість серіалізувати поля по деякій умові. Наприклад, лише імена картинок, або лише картинки, що мають шлях до файла.
+    showInformation("Серіалізація всієї галереї в формат JSON", true);
+    var result = serialize.call(gallery);
+    showInformation(result);
+
+    showInformation("Серіалізація картинок галереї в яких є шлях до файлу картинки в формат JSON");
+
+    var filteredGalleryByPath = getFilteredArrayByParam.call(gallery, defaultImagesCollectionName, 'path');
+
+    showInformation(serialize.call(filteredGalleryByPath));
+
+    showInformation("Серіалізація лише назв та опису всіх картинок галереї в формат JSON", true);
+    var memberFilter = ["images", "name", "description"];
+    showInformation(serialize.call(gallery, memberFilter));
+
+//6. Написати функцію, що буде перевіряти, чи всі картинки мають опис.
+    showInformation("Перевірка картинок, чи всі мають опис", true);
+    checkImagesDescription.call(gallery);
+}
+
+</script>
+</head>
+<body>
+
+</body>
+</html>
